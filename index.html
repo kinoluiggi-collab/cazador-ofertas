@@ -131,24 +131,22 @@ footer a{color:var(--muted);text-decoration:underline}
 </footer>
 
 <script>
-// ML va DIRECTO (tiene CORS abierto: access-control-allow-origin: *)
-// Amazon va por PROXY (no tiene CORS)
+// ML: fetch directo (CORS abierto desde browsers reales)
+// Amazon: via proxy CORS
 const AMZ_PROXY = "https://corsproxy.io/?";
 
-const ML_BASE = "https://api.mercadolibre.com/sites/MLM/search";
-
-// Queries por formato para Explorar
-const EXPLORE = {
-  vinilo: { mlQ: ["vinilo LP", "disco de vinil", "vinyl record"] },
-  bluray: { mlQ: ["blu-ray", "bluray pelicula", "blu-ray serie"] },
-  "4k":   { mlQ: ["4k uhd blu-ray", "4k ultra hd pelicula"] },
-  dvd:    { mlQ: ["dvd pelicula", "dvd serie"] },
-  cd:     { mlQ: ["CD album", "CD jazz", "CD rock"] }
+// Queries de texto para Explorar — mismo mecanismo que la búsqueda manual
+const EXPLORE_QUERIES = {
+  vinilo: ["vinilo LP", "disco de vinil", "vinyl record"],
+  bluray: ["blu-ray", "bluray pelicula"],
+  "4k":   ["4k uhd blu-ray", "4k ultra hd"],
+  dvd:    ["dvd pelicula", "dvd serie"],
+  cd:     ["CD album musica", "CD jazz"]
 };
 
-const AMZ_EXPLORE = {
+const AMZ_QUERIES = {
   vinilo: ["vinilo LP", "vinyl record"],
-  bluray: ["blu-ray pelicula", "blu-ray serie"],
+  bluray: ["blu-ray pelicula"],
   "4k":   ["4k uhd pelicula"],
   dvd:    ["dvd pelicula"],
   cd:     ["CD album musica"]
@@ -159,15 +157,14 @@ const FMT_KW = {
   vinilo: ["vinilo","vinyl"," lp ","disco de vinil"],
   "4k":   ["4k uhd","4k ultra","uhd"],
   dvd:    ["dvd"],
-  cd:     ["cd audio","cd música","album cd"]
+  cd:     ["cd audio","cd música"]
 };
 
-let allItems = [];
+let allItems  = [];
 let activeFmt = "all";
-let showML = true;
-let showAMZ = true;
+let showML    = true;
+let showAMZ   = true;
 
-// ── utilidades ──────────────────────────────────────────────
 function detectFmt(title) {
   const t = " " + title.toLowerCase() + " ";
   if (FMT_KW["4k"].some(k => t.includes(k)))     return "4K UHD";
@@ -189,9 +186,9 @@ function fmtMatches(item) {
   return true;
 }
 
-function dedup(arr, key) {
+function dedup(arr) {
   const seen = new Set();
-  return arr.filter(i => { if (seen.has(i[key])) return false; seen.add(i[key]); return true; });
+  return arr.filter(i => { if (seen.has(i.id)) return false; seen.add(i.id); return true; });
 }
 
 function setLoading() {
@@ -206,13 +203,31 @@ function showErr(msg) {
   setTimeout(() => e.classList.remove("show"), 6000);
 }
 
-// ── fetch ML (directo, sin proxy) ────────────────────────────
-async function mlFetch(query, extra = "") {
-  const url = `${ML_BASE}?q=${encodeURIComponent(query)}&sort=price_asc&limit=50${extra}`;
-  const r = await fetch(url);
-  if (!r.ok) throw new Error("ML " + r.status);
-  const d = await r.json();
-  return (d.results || []).map(i => ({
+function toggleSrc(src) {
+  if (src === "ml") { showML = !showML; document.getElementById("btnML").classList.toggle("active", showML); }
+  else { showAMZ = !showAMZ; document.getElementById("btnAMZ").classList.toggle("active", showAMZ);
+    document.getElementById("amzNote").classList.toggle("show", showAMZ); }
+  renderGrid();
+}
+
+function setFmt(el, fmt) {
+  document.querySelectorAll(".tag").forEach(t => t.classList.remove("on"));
+  el.classList.add("on"); activeFmt = fmt; renderGrid();
+}
+
+// ── ML fetch directo ─────────────────────────────────────────
+async function fetchML(queries) {
+  let results = [];
+  for (const q of queries) {
+    try {
+      const url = `https://api.mercadolibre.com/sites/MLM/search?q=${encodeURIComponent(q)}&sort=price_asc&limit=50`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error("ML " + r.status);
+      const d = await r.json();
+      results = [...results, ...(d.results || [])];
+    } catch(e) { console.warn("ML error:", e); }
+  }
+  return dedup(results).map(i => ({
     id: "ml_" + i.id,
     src: "ml",
     title: i.title,
@@ -220,29 +235,20 @@ async function mlFetch(query, extra = "") {
     condition: i.condition,
     fmt: detectFmt(i.title) || "—",
     freeShipping: i.shipping?.free_shipping || false,
-    img: i.thumbnail ? i.thumbnail.replace("I.jpg", "O.jpg") : null,
+    img: i.thumbnail ? i.thumbnail.replace("I.jpg","O.jpg") : null,
     url: i.permalink
   }));
 }
 
-async function fetchML(queries) {
-  let all = [];
-  for (const q of queries) {
-    try { all = [...all, ...await mlFetch(q)]; } catch(e) {}
-  }
-  return dedup(all, "id");
-}
-
-// ── fetch Amazon (proxy) ─────────────────────────────────────
+// ── Amazon fetch via proxy ───────────────────────────────────
 async function fetchAMZ(queries) {
   let items = [];
   for (const sq of queries) {
     try {
       const amzUrl = `https://www.amazon.com.mx/s?k=${encodeURIComponent(sq)}`;
-      const r = await fetch(AMZ_PROXY + encodeURIComponent(amzUrl),
-        { signal: AbortSignal.timeout(9000) });
+      const r = await fetch(AMZ_PROXY + encodeURIComponent(amzUrl), { signal: AbortSignal.timeout(9000) });
       const html = await r.text();
-      const doc = new DOMParser().parseFromString(html, "text/html");
+      const doc  = new DOMParser().parseFromString(html, "text/html");
       doc.querySelectorAll('[data-component-type="s-search-result"]').forEach(c => {
         try {
           const asin = c.getAttribute("data-asin"); if (!asin) return;
@@ -250,20 +256,18 @@ async function fetchAMZ(queries) {
           const title = titleEl ? titleEl.textContent.trim() : ""; if (!title) return;
           const pw = c.querySelector(".a-price-whole");
           const pf = c.querySelector(".a-price-fraction");
-          const price = pw
-            ? parseFloat(pw.textContent.replace(/[^0-9]/g,"") + "." + (pf ? pf.textContent.replace(/[^0-9]/g,"") : "00"))
-            : null;
-          const img = c.querySelector("img.s-image")?.getAttribute("src") || null;
+          const price = pw ? parseFloat(pw.textContent.replace(/[^0-9]/g,"") + "." + (pf ? pf.textContent.replace(/[^0-9]/g,"") : "00")) : null;
+          const img  = c.querySelector("img.s-image")?.getAttribute("src") || null;
           const href = c.querySelector("h2 a")?.getAttribute("href") || "";
-          const url = href ? "https://www.amazon.com.mx" + href : "https://www.amazon.com.mx/dp/" + asin;
+          const url  = href ? "https://www.amazon.com.mx" + href : "https://www.amazon.com.mx/dp/" + asin;
           const freeShipping = c.textContent.toLowerCase().includes("gratis");
           items.push({ id:"amz_"+asin, src:"amz", title, price,
             condition:"new", fmt: detectFmt(title)||"—", freeShipping, img, url });
         } catch(e) {}
       });
-    } catch(e) {}
+    } catch(e) { console.warn("AMZ error:", e); }
   }
-  return dedup(items, "id");
+  return dedup(items);
 }
 
 // ── EXPLORAR ─────────────────────────────────────────────────
@@ -286,12 +290,12 @@ async function explorar(fmt) {
   setLoading();
   allItems = [];
 
-  const mlQueries  = EXPLORE[fmt]?.mlQ  || [fmt];
-  const amzQueries = AMZ_EXPLORE[fmt]   || [fmt];
+  const mlQ  = EXPLORE_QUERIES[fmt] || [fmt];
+  const amzQ = AMZ_QUERIES[fmt]     || [fmt];
 
   const ps = [];
-  if (showML)  ps.push(fetchML(mlQueries).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Mercado Libre")));
-  if (showAMZ) ps.push(fetchAMZ(amzQueries).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Amazon MX")));
+  if (showML)  ps.push(fetchML(mlQ).then(r   => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Mercado Libre")));
+  if (showAMZ) ps.push(fetchAMZ(amzQ).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Amazon MX")));
   await Promise.all(ps);
 
   document.getElementById("sortSel").value = "price_asc";
@@ -310,37 +314,24 @@ async function buscarTexto() {
   allItems = [];
 
   const ps = [];
-  if (showML)  ps.push(fetchML([q]).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Mercado Libre")));
-  if (showAMZ) ps.push(fetchAMZ([q]).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Amazon MX")));
+  if (showML)  ps.push(fetchML([q]).then(r   => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Mercado Libre")));
+  if (showAMZ) ps.push(fetchAMZ([q]).then(r  => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Amazon MX")));
   await Promise.all(ps);
   renderGrid();
 }
 
-// ── TOGGLE FUENTE ────────────────────────────────────────────
-function toggleSrc(src) {
-  if (src === "ml") { showML = !showML; document.getElementById("btnML").classList.toggle("active", showML); }
-  else { showAMZ = !showAMZ; document.getElementById("btnAMZ").classList.toggle("active", showAMZ);
-    document.getElementById("amzNote").classList.toggle("show", showAMZ); }
-  renderGrid();
-}
-
-function setFmt(el, fmt) {
-  document.querySelectorAll(".tag").forEach(t => t.classList.remove("on"));
-  el.classList.add("on"); activeFmt = fmt; renderGrid();
-}
-
 // ── RENDER ───────────────────────────────────────────────────
 function renderGrid() {
-  const sort          = document.getElementById("sortSel").value;
-  const sinPrecio     = document.getElementById("chkSinPrecio").checked;
-  const soloGratis    = document.getElementById("chkSoloGratis").checked;
+  const sort       = document.getElementById("sortSel").value;
+  const sinPrecio  = document.getElementById("chkSinPrecio").checked;
+  const soloGratis = document.getElementById("chkSoloGratis").checked;
 
   let items = allItems.filter(i => {
-    if (!showML  && i.src === "ml")  return false;
-    if (!showAMZ && i.src === "amz") return false;
-    if (!fmtMatches(i))              return false;
-    if (!sinPrecio && !i.price)      return false;
-    if (soloGratis && !i.freeShipping) return false;
+    if (!showML  && i.src === "ml")        return false;
+    if (!showAMZ && i.src === "amz")       return false;
+    if (!fmtMatches(i))                    return false;
+    if (!sinPrecio && !i.price)            return false;
+    if (soloGratis && !i.freeShipping)     return false;
     return true;
   });
 
@@ -348,11 +339,11 @@ function renderGrid() {
   if (sort === "price_desc") items.sort((a,b) => (b.price||0)     - (a.price||0));
   if (sort === "title_asc")  items.sort((a,b) => a.title.localeCompare(b.title,"es"));
 
-  const mlN    = items.filter(i => i.src === "ml").length;
-  const amzN   = items.filter(i => i.src === "amz").length;
-  const freeN  = items.filter(i => i.freeShipping).length;
-
+  const mlN   = items.filter(i => i.src === "ml").length;
+  const amzN  = items.filter(i => i.src === "amz").length;
+  const freeN = items.filter(i => i.freeShipping).length;
   const stats = document.getElementById("stats");
+
   if (allItems.length > 0) {
     stats.innerHTML = `${items.length} resultado${items.length !== 1 ? "s" : ""} &nbsp;·&nbsp;
       <span class="src-dot" style="background:var(--ml)"></span> ML: ${mlN} &nbsp;·&nbsp;
@@ -363,7 +354,7 @@ function renderGrid() {
   const grid = document.getElementById("grid");
   if (items.length === 0) {
     const hint = soloGratis ? '<br><small>Prueba desactivando "Solo envío gratis".</small>' : "";
-    grid.innerHTML = `<div class="empty">Sin resultados con los filtros actuales.${hint}</div>`;
+    grid.innerHTML = `<div class="empty">Sin resultados.${hint}</div>`;
     return;
   }
 
@@ -374,9 +365,7 @@ function renderGrid() {
         <span class="card-src ${i.src === "ml" ? "src-ml" : "src-amz"}">${i.src === "ml" ? "ML" : "AMZ"}</span>
         ${i.freeShipping ? '<span class="badge-free">envío gratis</span>' : ""}
       </div>
-      ${i.img
-        ? `<img class="card-img" src="${i.img}" loading="lazy" alt="">`
-        : `<div class="card-img-ph">${emoji}</div>`}
+      ${i.img ? `<img class="card-img" src="${i.img}" loading="lazy" alt="">` : `<div class="card-img-ph">${emoji}</div>`}
       <span class="card-title">${i.title}</span>
       <span class="card-fmt">${i.fmt}</span>
       <div class="card-bottom">
