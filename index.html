@@ -74,6 +74,31 @@ select{background:var(--surface2);border:1px solid var(--border);color:var(--tex
 footer{padding:1rem 1.5rem;color:var(--muted);font-size:11px;border-top:1px solid var(--border)}
 footer a{color:var(--muted);text-decoration:underline}
 
+/* LAST.FM */
+.lfm-strip{display:flex;gap:.5rem;flex-wrap:wrap;padding:.6rem 1.5rem;border-bottom:1px solid var(--border);background:#130000;align-items:center}
+.lfm-label{font-size:11px;color:#d51007;letter-spacing:.06em;text-transform:uppercase;margin-right:.25rem;white-space:nowrap;font-weight:500}
+.lfm-artists{display:flex;gap:.35rem;flex-wrap:wrap;flex:1}
+.lfm-artist{background:#1a0000;border:1px solid #3a0808;color:#d08080;border-radius:999px;padding:.2rem .65rem;font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.lfm-artist:hover{border-color:#d51007;color:#d51007}
+.lfm-artist.active{background:#d51007;color:#fff;border-color:#d51007}
+.lfm-loading{font-size:11px;color:var(--muted);font-style:italic}
+
+/* FILTROS EXTRA */
+.filter-row{display:flex;gap:.75rem;flex-wrap:wrap;padding:.6rem 1.5rem;border-bottom:1px solid var(--border);align-items:center}
+.filter-row label{font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:.35rem;user-select:none}
+input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
+.price-filter{display:flex;align-items:center;gap:.4rem;font-size:12px;color:var(--muted)}
+.price-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:.3rem .5rem;font-size:12px;width:80px;outline:none;text-align:right}
+.price-input:focus{border-color:var(--accent)}
+.price-chips{display:flex;gap:.3rem;flex-wrap:wrap}
+.chip{padding:.2rem .6rem;border-radius:999px;border:1px solid var(--border);font-size:11px;cursor:pointer;color:var(--muted);transition:all .15s;white-space:nowrap}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.on{background:var(--accent);color:#0e0e0e;border-color:var(--accent)}
+
+/* ENVIO GRATIS BADGE */
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.3rem;flex-wrap:wrap}
+.badge-free{font-size:10px;padding:.12rem .45rem;border-radius:3px;background:#0a1a0a;color:#5db85d;border:1px solid #1a3a1a;white-space:nowrap}
+
 @media(max-width:600px){
   header h1{font-size:2rem}
   .controls{flex-direction:column}
@@ -87,6 +112,13 @@ footer a{color:var(--muted);text-decoration:underline}
   <h1>CAZADOR</h1>
   <p>Blu-ray &amp; vinilos · Mercado Libre MX + Amazon MX</p>
 </header>
+
+<!-- LAST.FM -->
+<div class="lfm-strip">
+  <span class="lfm-label">♫ Last.fm</span>
+  <span class="lfm-loading" id="lfmLoading">Cargando artistas...</span>
+  <div class="lfm-artists" id="lfmArtists"></div>
+</div>
 
 <div class="controls">
   <div class="search-wrap">
@@ -109,6 +141,22 @@ footer a{color:var(--muted);text-decoration:underline}
   <span class="tag" data-fmt="4k" onclick="setFmt(this,'4k')">4K UHD</span>
   <span class="tag" data-fmt="dvd" onclick="setFmt(this,'dvd')">DVD</span>
   <span class="tag" data-fmt="cd" onclick="setFmt(this,'cd')">CD</span>
+</div>
+
+<div class="filter-row">
+  <label><input type="checkbox" id="chkSinPrecio" onchange="renderGrid()"> Mostrar sin precio</label>
+  <label><input type="checkbox" id="chkSoloGratis" onchange="renderGrid()"> Solo envío gratis</label>
+  <div class="price-filter">
+    <span>Máx $</span>
+    <input type="number" class="price-input" id="maxPrecio" placeholder="—" min="0" oninput="syncChips();renderGrid()">
+    <div class="price-chips">
+      <span class="chip" onclick="setChip(this,200)">$200</span>
+      <span class="chip" onclick="setChip(this,400)">$400</span>
+      <span class="chip" onclick="setChip(this,600)">$600</span>
+      <span class="chip" onclick="setChip(this,1000)">$1,000</span>
+      <span class="chip" onclick="setChip(this,0)">Todo</span>
+    </div>
+  </div>
 </div>
 
 <div class="amz-note" id="amzNote">
@@ -218,6 +266,7 @@ async function fetchML(q) {
       currency: i.currency_id,
       condition: i.condition,
       fmt: detectFmt(i.title) || '—',
+      freeShipping: i.shipping?.free_shipping || false,
       img: i.thumbnail ? i.thumbnail.replace('I.jpg','O.jpg') : null,
       url: i.permalink
     }));
@@ -257,12 +306,59 @@ async function fetchAMZ(q) {
             ? 'https://www.amazon.com.mx' + linkEl.getAttribute('href')
             : 'https://www.amazon.com.mx/dp/' + asin;
           items.push({ id:'amz_'+asin, src:'amz', title, price, currency:'MXN',
-            condition:'new', fmt: detectFmt(title)||'—', img, url });
+            condition:'new', fmt: detectFmt(title)||'—',
+            freeShipping: c.textContent.toLowerCase().includes('gratis'),
+            img, url });
         } catch(e) {}
       });
     } catch(e) {}
   }
   return items;
+}
+
+// ── LAST.FM ───────────────────────────────────────────────────
+async function loadLastFmArtists() {
+  try {
+    const url = 'https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=kinoluiggi&api_key=6b8d7a206bd7449cedb73dc6182d028e&format=json&limit=30';
+    const r = await fetch(url);
+    const d = await r.json();
+    const artists = (d.topartists?.artist || []).map(a => a.name);
+    document.getElementById('lfmLoading').style.display = 'none';
+    document.getElementById('lfmArtists').innerHTML = artists.map(a =>
+      `<button class="lfm-artist" onclick="buscarArtista(this,'${a.replace(/'/g,"\\'")}')">${a}</button>`
+    ).join('');
+  } catch(e) {
+    document.getElementById('lfmLoading').textContent = 'Error Last.fm';
+  }
+}
+
+async function buscarArtista(el, artist) {
+  document.querySelectorAll('.lfm-artist').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('q').value = artist;
+  document.getElementById('errBar').classList.remove('show');
+  setLoading(true);
+  allItems = [];
+  const ps = [];
+  if (showML)  ps.push(fetchML(artist).then(r  => { allItems = [...allItems, ...r]; }).catch(() => {}));
+  if (showAMZ) ps.push(fetchAMZ(artist).then(r => { allItems = [...allItems, ...r]; }).catch(() => {}));
+  await Promise.all(ps);
+  renderGrid();
+}
+
+// ── PRECIO ────────────────────────────────────────────────────
+function setChip(el, val) {
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('maxPrecio').value = val > 0 ? val : '';
+  renderGrid();
+}
+function syncChips() {
+  const v = parseInt(document.getElementById('maxPrecio').value) || 0;
+  document.querySelectorAll('.chip').forEach(c => {
+    const cv = parseInt(c.textContent.replace(/[^0-9]/g,'')) || 0;
+    c.classList.toggle('on', cv === v && v > 0);
+  });
 }
 
 async function buscar() {
@@ -285,7 +381,14 @@ function renderGrid() {
   let items = allItems.filter(i => {
     if (!showML  && i.src === 'ml')  return false;
     if (!showAMZ && i.src === 'amz') return false;
-    return fmtMatches(i);
+    if (!fmtMatches(i)) return false;
+    const sinPrecio  = document.getElementById('chkSinPrecio').checked;
+    const soloGratis = document.getElementById('chkSoloGratis').checked;
+    const maxP = parseFloat(document.getElementById('maxPrecio').value) || 0;
+    if (!sinPrecio && !i.price) return false;
+    if (soloGratis && !i.freeShipping) return false;
+    if (maxP > 0 && i.price && i.price > maxP) return false;
+    return true;
   });
   if (sort === 'price_asc')  items.sort((a,b) => (a.price||99999) - (b.price||99999));
   if (sort === 'price_desc') items.sort((a,b) => (b.price||0)     - (a.price||0));
@@ -307,9 +410,12 @@ function renderGrid() {
   }
   grid.innerHTML = items.map(i => `
     <a class="card" href="${i.url}" target="_blank" rel="noopener">
-      <span class="card-src ${i.src === 'ml' ? 'src-ml' : 'src-amz'}">
-        ${i.src === 'ml' ? 'Mercado Libre' : 'Amazon MX'}
-      </span>
+      <div class="card-top">
+        <span class="card-src ${i.src === 'ml' ? 'src-ml' : 'src-amz'}">
+          ${i.src === 'ml' ? 'Mercado Libre' : 'Amazon MX'}
+        </span>
+        ${i.freeShipping ? '<span class="badge-free">envío gratis</span>' : ''}
+      </div>
       ${i.img
         ? `<img class="card-img" src="${i.img}" loading="lazy" alt="">`
         : `<div class="card-img-ph">🎬</div>`}
@@ -326,6 +432,7 @@ function renderGrid() {
 }
 
 document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') buscar(); });
+loadLastFmArtists();
 </script>
 </body>
 </html>
