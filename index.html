@@ -13,42 +13,35 @@
   --accent:#e8c84a;--text:#f0ede8;--muted:#888;--ml:#ffe600;--amz:#ff9900;
 }
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;min-height:100vh}
-
 header{padding:1.5rem 1.5rem .75rem;border-bottom:1px solid var(--border);display:flex;align-items:baseline;gap:1rem;flex-wrap:wrap}
 header h1{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:.04em;color:var(--accent);line-height:1}
 header p{color:var(--muted);font-size:12px;font-weight:300}
-
 .explore-row{display:flex;gap:.5rem;flex-wrap:wrap;padding:.75rem 1.5rem;border-bottom:1px solid var(--border);background:#111;align-items:center}
 .explore-label{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-right:.25rem;white-space:nowrap}
-.ebtn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:.4rem .9rem;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.ebtn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:.4rem .9rem;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
 .ebtn:hover{border-color:var(--accent);color:var(--accent)}
 .ebtn.active{border-color:var(--accent);color:var(--accent);background:#1a1500}
 .ebtn.loading{opacity:.5;pointer-events:none}
-
 .controls{padding:.75rem 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--border);background:var(--surface)}
 .search-wrap{display:flex;flex:1;min-width:180px;gap:.4rem}
 input[type=text]{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:.45rem .7rem;font-family:'DM Sans',sans-serif;font-size:13px;flex:1;outline:none;transition:border-color .2s}
 input[type=text]:focus{border-color:var(--accent)}
-button.primary{background:var(--accent);color:#0e0e0e;border:none;border-radius:4px;padding:.45rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.06em;cursor:pointer;transition:opacity .15s;white-space:nowrap}
+button.primary{background:var(--accent);color:#0e0e0e;border:none;border-radius:4px;padding:.45rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:.06em;cursor:pointer;white-space:nowrap}
 button.primary:hover{opacity:.85}
 button.sec{background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:4px;padding:.45rem .8rem;font-size:12px;cursor:pointer;transition:all .15s;white-space:nowrap}
 button.sec.active{border-color:var(--accent);color:var(--accent)}
 select{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:.45rem .6rem;font-size:12px;outline:none;cursor:pointer}
-
 .tag-row{display:flex;gap:.4rem;flex-wrap:wrap;padding:.6rem 1.5rem;border-bottom:1px solid var(--border)}
 .tag{padding:.25rem .7rem;border-radius:999px;border:1px solid var(--border);font-size:11px;cursor:pointer;transition:all .15s;color:var(--muted);white-space:nowrap}
 .tag:hover{border-color:var(--accent);color:var(--accent)}
 .tag.on{background:var(--accent);color:#0e0e0e;border-color:var(--accent);font-weight:500}
-
 .filter-row{display:flex;gap:1rem;flex-wrap:wrap;padding:.5rem 1.5rem;border-bottom:1px solid var(--border);align-items:center}
 .filter-row label{font-size:12px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:.35rem;user-select:none}
 input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
-
 .stats{padding:.5rem 1.5rem;font-size:12px;color:var(--muted);border-bottom:1px solid var(--border);min-height:1.8rem;display:flex;align-items:center;gap:.5rem}
 .src-dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex-shrink:0}
-
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1px;background:var(--border)}
-.card{background:var(--surface);padding:.9rem;display:flex;flex-direction:column;gap:.45rem;transition:background .15s;cursor:pointer;text-decoration:none;color:inherit}
+.card{background:var(--surface);padding:.9rem;display:flex;flex-direction:column;gap:.45rem;transition:background .15s;text-decoration:none;color:inherit}
 .card:hover{background:var(--surface2)}
 .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.3rem;flex-wrap:wrap}
 .card-src{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;padding:.12rem .45rem;border-radius:3px}
@@ -65,20 +58,16 @@ input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
 .card-cond{font-size:10px;padding:.1rem .35rem;border-radius:2px}
 .cond-new{background:#0a1a0a;color:#5db85d;border:1px solid #1a3a1a}
 .cond-used{background:#1a150a;color:#b8a05d;border:1px solid #3a2e0a}
-
 .empty{grid-column:1/-1;padding:3rem;text-align:center;color:var(--muted);line-height:2}
 .loader{grid-column:1/-1;padding:2rem;text-align:center;color:var(--muted)}
 .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:.4rem}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 .error-bar{background:#1a0a0a;border-left:3px solid #a03030;color:#e07070;padding:.5rem 1.5rem;font-size:12px;display:none}
 .error-bar.show{display:block}
 .amz-note{background:#1a0e00;border-left:3px solid #a06020;color:#b87040;padding:.5rem 1.5rem;font-size:12px;display:none}
 .amz-note.show{display:block}
-
 footer{padding:.75rem 1.5rem;color:var(--muted);font-size:11px;border-top:1px solid var(--border)}
 footer a{color:var(--muted);text-decoration:underline}
-
 @media(max-width:600px){
   header h1{font-size:2rem}
   .controls{flex-direction:column}
@@ -95,17 +84,17 @@ footer a{color:var(--muted);text-decoration:underline}
 
 <div class="explore-row">
   <span class="explore-label">Explorar</span>
-  <button class="ebtn" id="ebtn-vinilo"  onclick="explorar('vinilo')">🎵 Vinilos / LP</button>
-  <button class="ebtn" id="ebtn-bluray"  onclick="explorar('bluray')">🎬 Blu-ray</button>
-  <button class="ebtn" id="ebtn-4k"      onclick="explorar('4k')">✦ 4K UHD</button>
-  <button class="ebtn" id="ebtn-dvd"     onclick="explorar('dvd')">📀 DVD</button>
-  <button class="ebtn" id="ebtn-cd"      onclick="explorar('cd')">💿 CD</button>
+  <button class="ebtn" id="ebtn-vinilo" onclick="explorar('vinilo')">🎵 Vinilos / LP</button>
+  <button class="ebtn" id="ebtn-bluray" onclick="explorar('bluray')">🎬 Blu-ray</button>
+  <button class="ebtn" id="ebtn-4k"     onclick="explorar('4k')">✦ 4K UHD</button>
+  <button class="ebtn" id="ebtn-dvd"    onclick="explorar('dvd')">📀 DVD</button>
+  <button class="ebtn" id="ebtn-cd"     onclick="explorar('cd')">💿 CD</button>
 </div>
 
 <div class="controls">
   <div class="search-wrap">
     <input type="text" id="q" placeholder="buscar título, artista, sello...">
-    <button class="primary" onclick="buscarPorTexto()">Buscar</button>
+    <button class="primary" onclick="buscarTexto()">Buscar</button>
   </div>
   <select id="sortSel" onchange="renderGrid()">
     <option value="price_asc">Precio ↑</option>
@@ -126,7 +115,7 @@ footer a{color:var(--muted);text-decoration:underline}
 </div>
 
 <div class="filter-row">
-  <label><input type="checkbox" id="chkSinPrecio" onchange="renderGrid()"> Mostrar sin precio</label>
+  <label><input type="checkbox" id="chkSinPrecio"  onchange="renderGrid()"> Mostrar sin precio</label>
   <label><input type="checkbox" id="chkSoloGratis" onchange="renderGrid()"> Solo envío gratis</label>
 </div>
 
@@ -142,265 +131,265 @@ footer a{color:var(--muted);text-decoration:underline}
 </footer>
 
 <script>
-const PROXY = "https://corsproxy.io/?";
+// ML va DIRECTO (tiene CORS abierto: access-control-allow-origin: *)
+// Amazon va por PROXY (no tiene CORS)
+const AMZ_PROXY = "https://corsproxy.io/?";
+
+const ML_BASE = "https://api.mercadolibre.com/sites/MLM/search";
+
+// Queries por formato para Explorar
+const EXPLORE = {
+  vinilo: { mlQ: ["vinilo LP", "disco de vinil", "vinyl record"] },
+  bluray: { mlQ: ["blu-ray", "bluray pelicula", "blu-ray serie"] },
+  "4k":   { mlQ: ["4k uhd blu-ray", "4k ultra hd pelicula"] },
+  dvd:    { mlQ: ["dvd pelicula", "dvd serie"] },
+  cd:     { mlQ: ["CD album", "CD jazz", "CD rock"] }
+};
+
+const AMZ_EXPLORE = {
+  vinilo: ["vinilo LP", "vinyl record"],
+  bluray: ["blu-ray pelicula", "blu-ray serie"],
+  "4k":   ["4k uhd pelicula"],
+  dvd:    ["dvd pelicula"],
+  cd:     ["CD album musica"]
+};
+
+const FMT_KW = {
+  bluray: ["blu-ray","bluray","blu ray"],
+  vinilo: ["vinilo","vinyl"," lp ","disco de vinil"],
+  "4k":   ["4k uhd","4k ultra","uhd"],
+  dvd:    ["dvd"],
+  cd:     ["cd audio","cd música","album cd"]
+};
+
 let allItems = [];
-let activeFmt = 'all';
+let activeFmt = "all";
 let showML = true;
 let showAMZ = true;
 
-// Categorías ML para Explorar (sin keyword)
-// MLM1182 = Música, MLM1011 = Películas y Series
-const ML_CATS = {
-  vinilo: 'MLM1182',   // Música — filtramos por keyword en título
-  bluray: 'MLM1011',
-  '4k':   'MLM1011',
-  dvd:    'MLM1011',
-  cd:     'MLM1182'
-};
-
-// Keywords adicionales para refinar dentro de la categoría
-const ML_CAT_KEYWORDS = {
-  vinilo: 'vinilo',
-  bluray: 'blu-ray',
-  '4k':   '4k uhd',
-  dvd:    'dvd',
-  cd:     'cd album'
-};
-
-// Queries para Amazon (proxy)
-const AMZ_QUERIES = {
-  vinilo: ['vinilo LP', 'vinyl record', 'disco de vinil'],
-  bluray: ['blu-ray pelicula', 'blu-ray serie'],
-  '4k':   ['4k uhd bluray', '4k ultra hd pelicula'],
-  dvd:    ['dvd pelicula', 'dvd serie'],
-  cd:     ['cd album musica', 'cd jazz rock']
-};
-
-const FMT_KEYWORDS = {
-  bluray: ['blu-ray','bluray','blu ray'],
-  vinilo: ['vinilo','vinyl',' lp ','disco de vinil','disco vinyl'],
-  '4k':   ['4k uhd','4k ultra','uhd'],
-  dvd:    ['dvd'],
-  cd:     ['cd audio','cd música','album cd']
-};
-
-function detectFmt(title){
-  const t = ' '+title.toLowerCase()+' ';
-  if(FMT_KEYWORDS['4k'].some(k=>t.includes(k)))     return '4K UHD';
-  if(FMT_KEYWORDS.bluray.some(k=>t.includes(k)))    return 'Blu-ray';
-  if(FMT_KEYWORDS.vinilo.some(k=>t.includes(k)))    return 'Vinilo / LP';
-  if(FMT_KEYWORDS.dvd.some(k=>t.includes(k)))       return 'DVD';
-  if(FMT_KEYWORDS.cd.some(k=>t.includes(k)))        return 'CD';
+// ── utilidades ──────────────────────────────────────────────
+function detectFmt(title) {
+  const t = " " + title.toLowerCase() + " ";
+  if (FMT_KW["4k"].some(k => t.includes(k)))     return "4K UHD";
+  if (FMT_KW.bluray.some(k => t.includes(k)))    return "Blu-ray";
+  if (FMT_KW.vinilo.some(k => t.includes(k)))    return "Vinilo / LP";
+  if (FMT_KW.dvd.some(k => t.includes(k)))       return "DVD";
+  if (FMT_KW.cd.some(k => t.includes(k)))        return "CD";
   return null;
 }
 
-function fmtMatches(item){
-  if(activeFmt==='all') return true;
-  const f=(item.fmt||'').toLowerCase();
-  if(activeFmt==='bluray') return f.includes('blu');
-  if(activeFmt==='vinilo') return f.includes('vinilo');
-  if(activeFmt==='4k')     return f.includes('4k');
-  if(activeFmt==='dvd')    return f==='dvd';
-  if(activeFmt==='cd')     return f==='cd';
+function fmtMatches(item) {
+  if (activeFmt === "all") return true;
+  const f = (item.fmt || "").toLowerCase();
+  if (activeFmt === "bluray") return f.includes("blu");
+  if (activeFmt === "vinilo") return f.includes("vinilo");
+  if (activeFmt === "4k")     return f.includes("4k");
+  if (activeFmt === "dvd")    return f === "dvd";
+  if (activeFmt === "cd")     return f === "cd";
   return true;
 }
 
-function toggleSrc(src){
-  if(src==='ml'){ showML=!showML; document.getElementById('btnML').classList.toggle('active',showML); }
-  else { showAMZ=!showAMZ; document.getElementById('btnAMZ').classList.toggle('active',showAMZ);
-    document.getElementById('amzNote').classList.toggle('show',showAMZ); }
-  renderGrid();
+function dedup(arr, key) {
+  const seen = new Set();
+  return arr.filter(i => { if (seen.has(i[key])) return false; seen.add(i[key]); return true; });
 }
 
-function setFmt(el,fmt){
-  document.querySelectorAll('.tag').forEach(t=>t.classList.remove('on'));
-  el.classList.add('on'); activeFmt=fmt; renderGrid();
-}
-
-function setLoading(){
-  document.getElementById('grid').innerHTML=
+function setLoading() {
+  document.getElementById("grid").innerHTML =
     '<div class="loader"><span class="spinner"></span>Buscando...</div>';
-  document.getElementById('stats').textContent='Buscando...';
+  document.getElementById("stats").textContent = "Buscando...";
 }
 
-function showErr(msg){
-  const e=document.getElementById('errBar');
-  e.textContent=msg; e.classList.add('show');
-  setTimeout(()=>e.classList.remove('show'),6000);
+function showErr(msg) {
+  const e = document.getElementById("errBar");
+  e.textContent = msg; e.classList.add("show");
+  setTimeout(() => e.classList.remove("show"), 6000);
 }
 
-// --- ML por CATEGORÍA (para Explorar) ---
-async function fetchMLcat(fmt){
-  const cat = ML_CATS[fmt];
-  const kw  = ML_CAT_KEYWORDS[fmt];
-  try{
-    const url=`https://api.mercadolibre.com/sites/MLM/search?category=${cat}&q=${encodeURIComponent(kw)}&sort=price_asc&limit=50`;
-    const r=await fetch(url); const d=await r.json();
-    if(!d.results) return [];
-    return d.results.map(mapML);
-  }catch(e){ return []; }
-}
-
-// --- ML por TEXTO (para Buscar) ---
-async function fetchMLtext(q){
-  try{
-    const url=`https://api.mercadolibre.com/sites/MLM/search?q=${encodeURIComponent(q)}&limit=50`;
-    const r=await fetch(url); const d=await r.json();
-    if(!d.results) return [];
-    return d.results.map(mapML);
-  }catch(e){ return []; }
-}
-
-function mapML(i){
-  return {
-    id:'ml_'+i.id, src:'ml', title:i.title,
-    price: i.price||null,
-    currency:i.currency_id, condition:i.condition,
-    fmt: detectFmt(i.title)||'—',
-    freeShipping: i.shipping?.free_shipping||false,
-    img: i.thumbnail?i.thumbnail.replace('I.jpg','O.jpg'):null,
+// ── fetch ML (directo, sin proxy) ────────────────────────────
+async function mlFetch(query, extra = "") {
+  const url = `${ML_BASE}?q=${encodeURIComponent(query)}&sort=price_asc&limit=50${extra}`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error("ML " + r.status);
+  const d = await r.json();
+  return (d.results || []).map(i => ({
+    id: "ml_" + i.id,
+    src: "ml",
+    title: i.title,
+    price: i.price || null,
+    condition: i.condition,
+    fmt: detectFmt(i.title) || "—",
+    freeShipping: i.shipping?.free_shipping || false,
+    img: i.thumbnail ? i.thumbnail.replace("I.jpg", "O.jpg") : null,
     url: i.permalink
-  };
+  }));
 }
 
-// --- Amazon (proxy) ---
-async function fetchAMZ(queries){
-  let items=[];
-  for(const sq of queries){
-    try{
-      const amzUrl=`https://www.amazon.com.mx/s?k=${encodeURIComponent(sq)}`;
-      const r=await fetch(PROXY+encodeURIComponent(amzUrl),{signal:AbortSignal.timeout(9000)});
-      const html=await r.text();
-      const doc=new DOMParser().parseFromString(html,'text/html');
-      doc.querySelectorAll('[data-component-type="s-search-result"]').forEach(c=>{
-        try{
-          const asin=c.getAttribute('data-asin'); if(!asin) return;
-          const titleEl=c.querySelector('h2 a span')||c.querySelector('[data-cy="title-recipe"] span');
-          const title=titleEl?titleEl.textContent.trim():''; if(!title) return;
-          const pw=c.querySelector('.a-price-whole');
-          const pf=c.querySelector('.a-price-fraction');
-          let price=null;
-          if(pw){ price=parseFloat(pw.textContent.replace(/[^0-9]/g,'')+'.'+(pf?pf.textContent.replace(/[^0-9]/g,''):'00')); }
-          const img=c.querySelector('img.s-image')?.getAttribute('src')||null;
-          const linkEl=c.querySelector('h2 a');
-          const url=linkEl?'https://www.amazon.com.mx'+linkEl.getAttribute('href'):'https://www.amazon.com.mx/dp/'+asin;
-          const freeShipping=!![...c.querySelectorAll('*')].find(el=>el.children.length===0&&el.textContent.toLowerCase().includes('gratis'));
-          items.push({id:'amz_'+asin,src:'amz',title,price,currency:'MXN',
-            condition:'new',fmt:detectFmt(title)||'—',freeShipping,img,url});
-        }catch(e){}
-      });
-    }catch(e){}
+async function fetchML(queries) {
+  let all = [];
+  for (const q of queries) {
+    try { all = [...all, ...await mlFetch(q)]; } catch(e) {}
   }
-  const seen=new Set();
-  return items.filter(i=>{if(seen.has(i.id))return false;seen.add(i.id);return true;});
+  return dedup(all, "id");
 }
 
-// --- EXPLORAR (por categoría ML + queries AMZ) ---
-async function explorar(fmt){
-  // reset checkboxes — no queremos filtros activos al explorar
-  document.getElementById('chkSinPrecio').checked = false;
-  document.getElementById('chkSoloGratis').checked = false;
-  document.getElementById('q').value = '';
+// ── fetch Amazon (proxy) ─────────────────────────────────────
+async function fetchAMZ(queries) {
+  let items = [];
+  for (const sq of queries) {
+    try {
+      const amzUrl = `https://www.amazon.com.mx/s?k=${encodeURIComponent(sq)}`;
+      const r = await fetch(AMZ_PROXY + encodeURIComponent(amzUrl),
+        { signal: AbortSignal.timeout(9000) });
+      const html = await r.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      doc.querySelectorAll('[data-component-type="s-search-result"]').forEach(c => {
+        try {
+          const asin = c.getAttribute("data-asin"); if (!asin) return;
+          const titleEl = c.querySelector("h2 a span");
+          const title = titleEl ? titleEl.textContent.trim() : ""; if (!title) return;
+          const pw = c.querySelector(".a-price-whole");
+          const pf = c.querySelector(".a-price-fraction");
+          const price = pw
+            ? parseFloat(pw.textContent.replace(/[^0-9]/g,"") + "." + (pf ? pf.textContent.replace(/[^0-9]/g,"") : "00"))
+            : null;
+          const img = c.querySelector("img.s-image")?.getAttribute("src") || null;
+          const href = c.querySelector("h2 a")?.getAttribute("href") || "";
+          const url = href ? "https://www.amazon.com.mx" + href : "https://www.amazon.com.mx/dp/" + asin;
+          const freeShipping = c.textContent.toLowerCase().includes("gratis");
+          items.push({ id:"amz_"+asin, src:"amz", title, price,
+            condition:"new", fmt: detectFmt(title)||"—", freeShipping, img, url });
+        } catch(e) {}
+      });
+    } catch(e) {}
+  }
+  return dedup(items, "id");
+}
 
-  // activar tag de formato
+// ── EXPLORAR ─────────────────────────────────────────────────
+async function explorar(fmt) {
+  // reset filtros
+  document.getElementById("chkSinPrecio").checked  = false;
+  document.getElementById("chkSoloGratis").checked = false;
+  document.getElementById("q").value = "";
+
+  // activar tag formato
   const tagEl = document.querySelector(`.tag[data-fmt="${fmt}"]`);
-  if(tagEl){ document.querySelectorAll('.tag').forEach(t=>t.classList.remove('on')); tagEl.classList.add('on'); activeFmt=fmt; }
+  if (tagEl) { document.querySelectorAll(".tag").forEach(t => t.classList.remove("on")); tagEl.classList.add("on"); activeFmt = fmt; }
 
-  // marcar botón activo
-  document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('active','loading'));
-  const btn = document.getElementById('ebtn-'+fmt);
-  if(btn) btn.classList.add('active','loading');
+  // activar botón
+  document.querySelectorAll(".ebtn").forEach(b => b.classList.remove("active","loading"));
+  const btn = document.getElementById("ebtn-" + fmt);
+  if (btn) btn.classList.add("active","loading");
 
-  document.getElementById('errBar').classList.remove('show');
+  document.getElementById("errBar").classList.remove("show");
   setLoading();
-  allItems=[];
+  allItems = [];
 
-  const ps=[];
-  if(showML)  ps.push(fetchMLcat(fmt).then(r=>{allItems=[...allItems,...r]}).catch(()=>showErr('Error Mercado Libre')));
-  if(showAMZ) ps.push(fetchAMZ(AMZ_QUERIES[fmt]||[fmt]).then(r=>{allItems=[...allItems,...r]}).catch(()=>showErr('Error Amazon MX')));
+  const mlQueries  = EXPLORE[fmt]?.mlQ  || [fmt];
+  const amzQueries = AMZ_EXPLORE[fmt]   || [fmt];
+
+  const ps = [];
+  if (showML)  ps.push(fetchML(mlQueries).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Mercado Libre")));
+  if (showAMZ) ps.push(fetchAMZ(amzQueries).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Amazon MX")));
   await Promise.all(ps);
 
-  document.getElementById('sortSel').value='price_asc';
-  if(btn) btn.classList.remove('loading');
+  document.getElementById("sortSel").value = "price_asc";
+  if (btn) btn.classList.remove("loading");
   renderGrid();
 }
 
-// --- BUSCAR POR TEXTO ---
-async function buscarPorTexto(){
-  const q=document.getElementById('q').value.trim();
-  if(!q){showErr('Ingresa un término de búsqueda.');return;}
+// ── BUSCAR POR TEXTO ─────────────────────────────────────────
+async function buscarTexto() {
+  const q = document.getElementById("q").value.trim();
+  if (!q) { showErr("Ingresa un término de búsqueda."); return; }
 
-  // desactivar botones explorar
-  document.querySelectorAll('.ebtn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll(".ebtn").forEach(b => b.classList.remove("active"));
+  document.getElementById("errBar").classList.remove("show");
+  setLoading();
+  allItems = [];
 
-  document.getElementById('errBar').classList.remove('show');
-  setLoading(); allItems=[];
-  const ps=[];
-  if(showML)  ps.push(fetchMLtext(q).then(r=>{allItems=[...allItems,...r]}).catch(()=>showErr('Error Mercado Libre')));
-  if(showAMZ) ps.push(fetchAMZ([q]).then(r=>{allItems=[...allItems,...r]}).catch(()=>showErr('Error Amazon MX')));
+  const ps = [];
+  if (showML)  ps.push(fetchML([q]).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Mercado Libre")));
+  if (showAMZ) ps.push(fetchAMZ([q]).then(r => { allItems = [...allItems, ...r]; }).catch(() => showErr("Error Amazon MX")));
   await Promise.all(ps);
   renderGrid();
 }
 
-// --- RENDER ---
-function renderGrid(){
-  const sort=document.getElementById('sortSel').value;
-  const mostrarSinPrecio=document.getElementById('chkSinPrecio').checked;
-  const soloGratis=document.getElementById('chkSoloGratis').checked;
+// ── TOGGLE FUENTE ────────────────────────────────────────────
+function toggleSrc(src) {
+  if (src === "ml") { showML = !showML; document.getElementById("btnML").classList.toggle("active", showML); }
+  else { showAMZ = !showAMZ; document.getElementById("btnAMZ").classList.toggle("active", showAMZ);
+    document.getElementById("amzNote").classList.toggle("show", showAMZ); }
+  renderGrid();
+}
 
-  let items=allItems.filter(i=>{
-    if(!showML  && i.src==='ml')  return false;
-    if(!showAMZ && i.src==='amz') return false;
-    if(!fmtMatches(i)) return false;
-    if(!mostrarSinPrecio && !i.price) return false;
-    if(soloGratis && !i.freeShipping) return false;
+function setFmt(el, fmt) {
+  document.querySelectorAll(".tag").forEach(t => t.classList.remove("on"));
+  el.classList.add("on"); activeFmt = fmt; renderGrid();
+}
+
+// ── RENDER ───────────────────────────────────────────────────
+function renderGrid() {
+  const sort          = document.getElementById("sortSel").value;
+  const sinPrecio     = document.getElementById("chkSinPrecio").checked;
+  const soloGratis    = document.getElementById("chkSoloGratis").checked;
+
+  let items = allItems.filter(i => {
+    if (!showML  && i.src === "ml")  return false;
+    if (!showAMZ && i.src === "amz") return false;
+    if (!fmtMatches(i))              return false;
+    if (!sinPrecio && !i.price)      return false;
+    if (soloGratis && !i.freeShipping) return false;
     return true;
   });
 
-  if(sort==='price_asc')  items.sort((a,b)=>(a.price||99999)-(b.price||99999));
-  if(sort==='price_desc') items.sort((a,b)=>(b.price||0)-(a.price||0));
-  if(sort==='title_asc')  items.sort((a,b)=>a.title.localeCompare(b.title,'es'));
+  if (sort === "price_asc")  items.sort((a,b) => (a.price||99999) - (b.price||99999));
+  if (sort === "price_desc") items.sort((a,b) => (b.price||0)     - (a.price||0));
+  if (sort === "title_asc")  items.sort((a,b) => a.title.localeCompare(b.title,"es"));
 
-  const mlN=items.filter(i=>i.src==='ml').length;
-  const amzN=items.filter(i=>i.src==='amz').length;
-  const freeN=items.filter(i=>i.freeShipping).length;
+  const mlN    = items.filter(i => i.src === "ml").length;
+  const amzN   = items.filter(i => i.src === "amz").length;
+  const freeN  = items.filter(i => i.freeShipping).length;
 
-  const stats=document.getElementById('stats');
-  if(allItems.length>0){
-    stats.innerHTML=`${items.length} resultado${items.length!==1?'s':''} &nbsp;·&nbsp;
+  const stats = document.getElementById("stats");
+  if (allItems.length > 0) {
+    stats.innerHTML = `${items.length} resultado${items.length !== 1 ? "s" : ""} &nbsp;·&nbsp;
       <span class="src-dot" style="background:var(--ml)"></span> ML: ${mlN} &nbsp;·&nbsp;
       <span class="src-dot" style="background:var(--amz)"></span> AMZ: ${amzN} &nbsp;·&nbsp;
       <span style="color:#5db85d">✓ gratis: ${freeN}</span>`;
   }
 
-  const grid=document.getElementById('grid');
-  if(items.length===0){
-    const hint = soloGratis ? 'Desactiva "Solo envío gratis" para ver más.' : '';
-    grid.innerHTML=`<div class="empty">Sin resultados con los filtros actuales.<br><small>${hint}</small></div>`;
+  const grid = document.getElementById("grid");
+  if (items.length === 0) {
+    const hint = soloGratis ? '<br><small>Prueba desactivando "Solo envío gratis".</small>' : "";
+    grid.innerHTML = `<div class="empty">Sin resultados con los filtros actuales.${hint}</div>`;
     return;
   }
 
-  const emoji = activeFmt==='vinilo'?'🎵':activeFmt==='cd'?'💿':'🎬';
-  grid.innerHTML=items.map(i=>`
+  const emoji = activeFmt === "vinilo" ? "🎵" : activeFmt === "cd" ? "💿" : "🎬";
+  grid.innerHTML = items.map(i => `
     <a class="card" href="${i.url}" target="_blank" rel="noopener">
       <div class="card-top">
-        <span class="card-src ${i.src==='ml'?'src-ml':'src-amz'}">${i.src==='ml'?'ML':'AMZ'}</span>
-        ${i.freeShipping?'<span class="badge-free">envío gratis</span>':''}
+        <span class="card-src ${i.src === "ml" ? "src-ml" : "src-amz"}">${i.src === "ml" ? "ML" : "AMZ"}</span>
+        ${i.freeShipping ? '<span class="badge-free">envío gratis</span>' : ""}
       </div>
-      ${i.img?`<img class="card-img" src="${i.img}" loading="lazy" alt="">`:`<div class="card-img-ph">${emoji}</div>`}
+      ${i.img
+        ? `<img class="card-img" src="${i.img}" loading="lazy" alt="">`
+        : `<div class="card-img-ph">${emoji}</div>`}
       <span class="card-title">${i.title}</span>
       <span class="card-fmt">${i.fmt}</span>
       <div class="card-bottom">
-        <span class="card-price ${!i.price?'no-price':''}">${i.price
-          ?'$'+i.price.toLocaleString('es-MX',{minimumFractionDigits:0,maximumFractionDigits:0})
-          :'sin precio'}</span>
-        <span class="card-cond ${i.condition==='new'?'cond-new':'cond-used'}">${i.condition==='new'?'Nuevo':'Usado'}</span>
+        <span class="card-price ${!i.price ? "no-price" : ""}">${i.price
+          ? "$" + i.price.toLocaleString("es-MX", {minimumFractionDigits:0, maximumFractionDigits:0})
+          : "sin precio"}</span>
+        <span class="card-cond ${i.condition === "new" ? "cond-new" : "cond-used"}">${i.condition === "new" ? "Nuevo" : "Usado"}</span>
       </div>
     </a>
-  `).join('');
+  `).join("");
 }
 
-document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')buscarPorTexto();});
+document.getElementById("q").addEventListener("keydown", e => { if (e.key === "Enter") buscarTexto(); });
 </script>
 </body>
 </html>
